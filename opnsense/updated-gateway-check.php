@@ -281,6 +281,7 @@ function get_current_gateway($uuid, $settings) {
 $config_file = '/root/gateway-check.ini';
 $settings = load_config($config_file);
 
+// Initialize logging early to capture any potential issues
 // Ensure log file directory exists
 $log_file = isset($settings['logging']['log_file']) ?
     $settings['logging']['log_file'] : '/var/log/gateway-check.log';
@@ -303,7 +304,7 @@ $options = getopt('g:');
 if (isset($options['g'])) {
     // Start logging for manual mode
     gateway_log("Manual gateway operation started", $settings);
-
+    
     // Validate input format
     if (is_array($options['g'])) {
         gateway_log("Error: Multiple -g options provided", $settings);
@@ -341,12 +342,9 @@ if (isset($options['g'])) {
 
     gateway_log("Manual gateway override requested: {$new_gateway}", $settings);
     echo "Manual gateway override requested: {$new_gateway}\n";
-
     update_gateway($new_gateway, $settings);
-
     gateway_log("Manual gateway update completed", $settings);
     echo "Manual gateway update completed\n";
-
     exit(0);
 }
 
