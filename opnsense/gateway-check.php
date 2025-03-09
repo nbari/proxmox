@@ -11,6 +11,9 @@
  *    * * * * * /usr/local/bin/php /root/gateway-check.php
  *    * * * * * sleep 30; /usr/local/bin/php /root/gateway-check.php
  *
+ * Options:
+ *    -g <gateway_ip>  Manually set the gateway to the specified IP
+ *
  *  License BSD-2-Clause
  */
 
@@ -273,11 +276,39 @@ function get_current_gateway($uuid, $settings) {
     return null;
 }
 
-// Main execution
 
 // First, load configuration
 $config_file = '/root/gateway-check.ini';
 $settings = load_config($config_file);
+
+// Check for manual gateway update via -g
+$options = getopt('g:');
+
+if (isset($options['g'])) {
+    // Validate input format
+    if (is_array($options['g'])) {
+        fprintf(STDERR, "Error: Multiple -g options provided\n");
+        exit(1);
+    }
+
+    $new_gateway = trim($options['g']);
+
+    if (!filter_var($new_gateway, FILTER_VALIDATE_IP)) {
+        fprintf(STDERR, "Invalid IP address format: {$new_gateway}\n");
+        exit(1);
+    }
+
+    // Validate against configured gateways if required
+    if (!in_array($new_gateway, $settings['general']['gateway_ips'])) {
+        fprintf(STDERR, "Warning: {$new_gateway} not in configured gateway_ips\n");
+        exit(1);
+    }
+
+    echo "Manual gateway override requested: {$new_gateway}\n";
+    update_gateway($new_gateway, $settings);
+    echo "Manual gateway update completed\n";
+    exit(0);
+}
 
 // Ensure log file directory exists
 $log_file = isset($settings['logging']['log_file']) ?
