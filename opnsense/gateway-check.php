@@ -77,7 +77,7 @@ gateway_ips = x.x.x.99, x.x.x.100, x.x.x.101, x.x.x.102
 ; Ping timeout in seconds
 ping_timeout = 1
 ; Number of ping attempts
-ping_count = 3
+ping_count = 1
 
 [logging]
 ; Enable detailed logging
