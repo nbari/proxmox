@@ -1,4 +1,4 @@
-Create iso for automated installation.
+Create Debian iso for automated installation.
 
 Extract the iso to a directory.
 
@@ -29,9 +29,9 @@ xorriso : UPDATE :    1585 files restored ( 748.0m) in 1 seconds = 566.3xD
 Extracted from ISO image: file '/'='/tmp/tmp.fAewFvtO70'
 ```
 
-Update the `isolinux.cfg` file to contain the following:
+cd into `$tmpdir` and update the `isolinux/isolinux.cfg` file to contain the following:
 
-```bash
+```
 DEFAULT install
 TIMEOUT 0
 PROMPT 0
@@ -42,7 +42,7 @@ LABEL install
   APPEND auto=true priority=critical vga=788 initrd=/install.amd/initrd.gz --- quiet
 ```
 
-Rebuilt the ISO:
+Rebuilt the ISO in the temporary directory:
 
 ```bash
 cd $tmpdir
