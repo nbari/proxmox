@@ -32,14 +32,14 @@ require_once("xmlparse.inc");
  */
 function load_config($config_file) {
     if (!file_exists($config_file)) {
-        error_log("Configuration file not found: {$config_file}");
+        die("Configuration file not found: {$config_file}");
         create_default_config($config_file);
     }
 
     $config = parse_ini_file($config_file, true);
 
     if ($config === false) {
-        error_log("Failed to parse configuration file: {$config_file}");
+        die("Failed to parse configuration file: {$config_file}");
         exit(1);
     }
 
@@ -47,7 +47,7 @@ function load_config($config_file) {
     $required = ['uuid', 'interface', 'gateway_ips'];
     foreach ($required as $key) {
         if (!isset($config['general'][$key])) {
-            error_log("Missing required configuration: {$key}");
+            die("Missing required configuration: {$key}");
             exit(1);
         }
     }
@@ -94,11 +94,11 @@ log_rotate_count = 5
 EOT;
 
     if (!file_put_contents($config_file, $default_config)) {
-        error_log("Failed to create default configuration file: {$config_file}");
+        die("Failed to create default configuration file: {$config_file}");
         exit(1);
     }
 
-    error_log("Created default configuration file: {$config_file}");
+    die("Created default configuration file: {$config_file}");
 }
 
 /**
@@ -286,7 +286,7 @@ $log_file = isset($settings['logging']['log_file']) ?
     $settings['logging']['log_file'] : '/var/log/gateway-check.log';
 $log_dir = dirname($log_file);
 if (!is_dir($log_dir) && !mkdir($log_dir, 0755, true)) {
-    error_log("Failed to create log directory: {$log_dir}");
+    die("Failed to create log directory: {$log_dir}");
 }
 
 // Get current gateway from global config
