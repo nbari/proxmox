@@ -18,3 +18,20 @@ qm set <VMID> --delete hookscript
 ```
 
 > qm list will list all the VMs and their respective VMIDs.
+
+
+## change port in LXC container
+
+Stop the ssh.socket service:
+
+```bash
+systemctl stop ssh.socket
+```
+
+then enable the sshd service:
+
+```bash
+systemctl enable ssh
+```
+
+finally, reboot
