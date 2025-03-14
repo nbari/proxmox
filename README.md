@@ -35,3 +35,17 @@ systemctl enable ssh
 ```
 
 finally, reboot
+
+## Containers
+
+List available containers:
+
+```bash
+pveam available
+```
+
+Download a container:
+
+```bash
+pveam download local debian-12-standard_12.7-1_amd64.tar.zst
+```
