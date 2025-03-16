@@ -22,6 +22,7 @@ VERIFY_SSL = os.getenv("PROXMOX_VERIFY_SSL", "true").lower() == "true"
 OUTPUT_FILE = os.getenv("PROXMOX_SD_FILE", "/etc/prometheus/proxmox_sd.json")
 TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))  # Request timeout in seconds
 TARGET_NETWORK = os.getenv("TARGET_NETWORK", "10.0.0.0/24")
+TARGET_IP_EXCLUDED = os.getenv("TARGET_IP_EXCLUDED", "")
 
 # Convert to an ipaddress object
 try:
@@ -29,6 +30,13 @@ try:
 except ValueError:
     logger.error(f"Invalid TARGET_NETWORK CIDR: {TARGET_NETWORK}")
     sys.exit(1)
+
+EXCLUDED_IPS = {
+    ipaddress.ip_address(ip.strip())
+    for ip in TARGET_IP_EXCLUDED.split(",")
+    if ip.strip()
+}
+
 
 # Headers for authentication
 HEADERS = {"Authorization": f"PVEAPIToken=root@pam!{TOKEN_ID}={TOKEN_SECRET}"}
@@ -87,6 +95,7 @@ def get_vm_ips(node):
                                             ip_address.is_loopback
                                             or ip_address.is_link_local
                                             or ip_address.is_unspecified
+                                            or ip_address in EXCLUDED_IPS
                                         ):
 
                                             # Check if the IP belongs to the defined target network
