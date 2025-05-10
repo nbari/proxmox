@@ -75,6 +75,21 @@ In Proxmox create the `beef` route table for the VM's, in `/etc/iproute2/rt_tabl
 200     beef
 ```
 
+You need a custom routing table (like beef or ID 200) if:
+
+* Your Proxmox host has its own public IPv6 (like Hetzner’s 2a01:XXX:...) that should use its own gateway.
+
+* Your VMs use a different subnet (2001:XXX:YYY:beef::/64) routed over a tunnel (WireGuard/VXLAN/GRE).
+
+* You want to isolate routing policies (host vs VM traffic).
+
+> you can avoid creating a name and instead only use id 200 for example:
+
+```
+post-up ip -6 route add default via fe80::feed dev wg0 table 200
+post-up ip -6 rule add from 2001:XXX:YYY:beef::/64 table 200
+```
+
 Then add the following to `/etc/network/interfaces`:
 
 ```
@@ -119,4 +134,11 @@ Create the VMs using the bridge `br-beef`, they will get an IPv6 address
 automatically or you can assign them manually, for example in the range
 `2001:XXX:YYY:beef::2` to `2001:XXX:YYY:beef::ff` with a `/64` prefix and
 gateway `2001:XXX:YYY:beef::1`. The VMs will be able to reach the internet via
-the EdgeRouter and the WireGuard tunnel.
+the EdgeRouter and the WireGuard tunnel, example of `/etc/network/interfaces` for a VM:
+
+```
+iface eth0 inet6 static
+    address 2001:XXX:YYY:beef::100
+    netmask 64
+    gateway 2001:XXX:YYY:beef::1
+```
