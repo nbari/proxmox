@@ -72,3 +72,17 @@ And unmap the disk:
 ```bash
 rbd unmap tank/vm-114-disk-0
 ```
+
+## unattended-upgrades
+
+Install with:
+
+```bash
+apt install unattended-upgrades
+```
+
+Then configure it:
+
+```bash
+dpkg-reconfigure --priority=low unattended-upgrades
+```
