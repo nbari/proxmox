@@ -49,3 +49,5 @@ To restart tailscale after restarting, create a file in `/usr/local/etc/rc.sysho
 sleep 10
 /usr/local/etc/rc.d/tailscaled restart
 ```
+
+Read more here: https://docs.opnsense.org/development/backend/autorun.html
