@@ -37,3 +37,15 @@ curl -u "user":"pass" -k -s https://<opnsense/api/routing/settings/get | jq
 ```
 
 > jq is only needed if you want to pretty print the JSON output.
+
+
+## Tailscale
+
+To restart tailscale after restarting, create a file in `/usr/local/etc/rc.syshook.d/start` named `99-tailscale` with:
+
+```sh
+#!/bin/sh
+
+sleep 10
+/usr/local/etc/rc.d/tailscaled restart
+```
