@@ -86,3 +86,12 @@ Then configure it:
 ```bash
 dpkg-reconfigure --priority=low unattended-upgrades
 ```
+
+
+## CEPH
+
+Enable prometheus module:
+
+```bash
+ceph mgr module enable prometheus
+```
