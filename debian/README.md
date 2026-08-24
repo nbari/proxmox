@@ -42,6 +42,19 @@ LABEL install
   APPEND auto=true priority=critical vga=788 initrd=/install.amd/initrd.gz --- quiet
 ```
 
+Or use:
+
+```
+DEFAULT install
+TIMEOUT 0
+PROMPT 0
+
+LABEL install
+  MENU LABEL Automatic Install
+  KERNEL /install.amd/vmlinuz
+  APPEND auto=true priority=critical url=https://preseed.dev/preseed.cfg vga=788 initrd=/install.amd/initrd.gz --- quiet
+```
+
 Rebuilt the ISO in the temporary directory:
 
 ```bash
@@ -54,6 +67,26 @@ xorriso -as mkisofs -o /tmp/debian-auto.iso \
 ```
 
 > Note: The `isohdpfx.bin` file is located in `/usr/lib/syslinux/bios/` on Arch Linux., you need to install it `paru -Syu syslinux`
+
+in Fedora-atomic extract the `isohdfx.bin` from the iso:
+
+    dd if=debian-13.6.0-amd64-netinst.iso bs=1 count=432 of=/tmp/isohdpfx.bin
+
+Then do: 
+
+```
+cd "$tmpdir"
+
+xorriso -as mkisofs \
+  -o /tmp/debian-auto.iso \
+  -isohybrid-mbr /tmp/isohdpfx.bin \
+  -c isolinux/boot.cat \
+  -b isolinux/isolinux.bin \
+  -no-emul-boot \
+  -boot-load-size 4 \
+  -boot-info-table \
+  .
+```
 
 Output should be something like:
 
